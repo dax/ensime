@@ -184,6 +184,9 @@ argument is supplied) is a .scala or .java file."
 (defvar ensime-source-buffer-loaded-hook nil
   "Hook called whenever an ensime source buffer is loaded.")
 
+(defvar ensime-mode-hook nil
+  "Hook called whenever ensime mode is loaded.")
+
 (defun ensime-run-after-save-hooks ()
   "Things to run whenever a source buffer is saved."
   (condition-case err-info
@@ -390,7 +393,10 @@ Do not show 'Writing..' message."
           (setq tooltip-delay 1.0)
           (define-key ensime-mode-map [mouse-movement] 'ensime-mouse-motion))
 
-        (ensime-refresh-all-note-overlays))
+        (ensime-refresh-all-note-overlays)
+        (if ensime-mode-hook
+            (run-hooks 'ensime-mode-hook))
+        )
     (progn
       (ensime-ac-disable)
       (remove-hook 'after-save-hook 'ensime-run-after-save-hooks t)
